@@ -515,12 +515,10 @@ class GPT(nn.Module):
                     top_p_mask[..., 0] = False
                     sort_l[top_p_mask] = 0
                     sort_l /= torch.sum(sort_l, dim=-1, keepdim=True)
-                    print("SORT_L", sort_l.shape)
                     idx_next = torch.multinomial(sort_l, num_samples=1)
                     idx_next = sort_ind.gather(-1, idx_next)
                 else:
                     idx_next = torch.multinomial(logits, num_samples=1)
-            print(idx.shape, idx_next.shape)
             # append sampled index to the running sequence and continue
             idx = torch.cat([idx, idx_next], dim=-1) 
 

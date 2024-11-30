@@ -93,6 +93,7 @@ if __name__ == "__main__":
     parser.add_argument("--top_p", type=float, default=0.6)
     parser.add_argument('--prompt', type=str, default='Yesterday I went to the ')
     parser.add_argument('--pretrained_tokenizer', action='store_true')
+    parser.add_argument('--cpu', action='store_true')
     gen_args = parser.parse_args()
     for key, value in vars(gen_args).items():
         setattr(args, key, value)
@@ -101,7 +102,10 @@ if __name__ == "__main__":
 
     # Load model weights    
     model_weights_path = os.path.join(args.model_weights_folder, sorted(os.listdir(args.model_weights_folder))[-1])
-    state_dict = torch.load(model_weights_path)
+    if args.cpu:
+        state_dict = torch.load(model_weights_path, map_location=torch.device('cpu'))
+    else:
+        state_dict = torch.load(model_weights_path)
 
     # Clean up state dict keys by removing '_orig_mod' prefix if present due to torch.compile()
     if state_dict['hyper_parameters']['compile'] and 'state_dict' in state_dict:
