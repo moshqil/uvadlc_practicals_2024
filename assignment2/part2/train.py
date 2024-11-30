@@ -28,7 +28,7 @@ class GPTLightningModule(pl.LightningModule):
         self.model = model
 
         self.train_dataset = train_dataset
-        print("running on device", self.device)
+        print("running on device", self.config.device)
 
         # Unpack config hparams
         # NOTE: LearningRateFinder callback needs access to a self.lr
@@ -205,5 +205,6 @@ def train(args):
 if __name__ == "__main__":
     args = get_config()
     args.device = ("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")) 
+    # args.device = "mps"
 
     train(args=args)
